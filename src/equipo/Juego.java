@@ -1,4 +1,4 @@
-package equipo;
+package practica;
 import java.util.*;
 
 public class Juego {
@@ -7,7 +7,7 @@ public class Juego {
 
 	public static void main(String[] args) {
 		//Declarar las variables
-		int x = 0, y = 0;
+		int casilla = 0;
 		boolean turnoDeJugadorUno = true;
 		Scanner scan = new Scanner(System.in);
 
@@ -26,23 +26,17 @@ public class Juego {
 
 				//Hacer un ciclo hasta validar que el jugador elija un cuadrante disponible
 				boolean jugada = false;
-				while (!jugada) {					
-					//Leer las coordenadas X e Y
-					System.out.print("Selecciona la fila: ");
-					x = validarNumero(scan);
-					System.out.print("Selecciona la columna: ");
-					y = validarNumero(scan);			
-
-					/*Se le pasa a la función las coordenadas y si es el turno del jugador uno, es
-					 *si turnoDeJugadorUno es falso, entonces es turno del jugador dos.
- 					 *La función devuelve false si el cuadrante elegido ya se eligió antes, y se repite
-					 *el ciclo hasta que devuelva true, que significa que sí se pudo elegir el cuadrante 
-					 */
-					jugada = dibujarMatriz(x-1, y-1, turnoDeJugadorUno);					
+				while (!jugada) {			
 					
+					//Elegir el cuadrante (del 1 al 9)
+					System.out.print("Selecciona el cuadrante: ");
+					casilla = validarNumero(scan);
+					//Pasar el cuadrante a la función para 
+					jugada = dibujarMatriz(casilla, turnoDeJugadorUno);
+		
 					//Si la función devuelve false, avisar que ese cuadrante ya se eligió antes
 					if (!jugada)
-						System.out.println("\n¡El cuadrante ("+x+","+y+") ya está ocupado! Elije otro...\n");
+						System.out.println("\n¡El cuadrante ("+casilla+") ya está ocupado! Elije otro...\n");
 				}
 
 				if (tresEnFila()) {
@@ -90,7 +84,25 @@ public class Juego {
 				//Si tiene otro número (cuando se reinicia el juego), se dibuja un guión
 				simbolo = matriz[i][j] == 1 ? "X" : matriz[i][j] == 0 ? "O" : "-"; 
 				System.out.print(" "+simbolo+" ");
-				//Se pone un | para separar los números
+				//Se pone un | para separar las casillas
+				if (j != 2) System.out.print("|");
+			}
+			//Se pone un separados entre cada fila
+			if (i != 2) System.out.println("\n\t-----------");
+		}
+		System.out.println("\n"); //Salto de línea
+	}
+	
+	private static void dibujarEjemplo()
+	{
+		System.out.println("\n"); //Salto de línea
+		for(int i = 0; i < 3; i++) {
+			System.out.print("\t");  //Se pone un Tab a cada línea
+			for(int j = 0; j < 3; j++) {
+				//Mostrar los cuadrantes por número
+				int cuadrante = (j+1) + i*3;
+				System.out.print(" "+cuadrante+" ");
+				//Se pone un | para separar las casillas
 				if (j != 2) System.out.print("|");
 			}
 			//Se pone un separados entre cada fila
@@ -99,17 +111,52 @@ public class Juego {
 		System.out.println("\n"); //Salto de línea
 	}
 
-	private static boolean dibujarMatriz(int x, int y, boolean jugadorUno)
-	{
-		//Si el número en la casilla de esas coordenadas es 1 o 0, es porque ya hay una "X" o un "O"
+	private static boolean dibujarMatriz(int casilla, boolean jugadorUno) {
+		
+		int x=0, y=0;
+		switch(casilla) {
+		case 1:
+			x = 0;
+			y = 0;
+			break;
+		case 2:
+			x = 0;
+			y = 1;
+			break;
+		case 3:
+			x = 0;
+			y = 2;
+			break;
+		case 4:
+			x = 1;
+			y = 0;
+			break;
+		case 5:
+			x = 1;
+			y = 1;
+			break;
+		case 6:
+			x = 1;
+			y = 2;
+			break;
+		case 7:
+			x = 2;
+			y = 0;
+			break;
+		case 8:
+			x = 2;
+			y = 1;
+			break;
+		case 9:
+			x = 2;
+			y = 2;
+			break;
+		}
+		
 		if (matriz[x][y] == 0 || matriz[x][y] == 1) return false;
-
-		//Si no hay un 0 o 1, entonces está libre la casilla y se asigna 1 o 0, dependiendo de 
-		//qué jugador sea el turno
 		matriz[x][y] = jugadorUno ? 1 : 0;
-		//Luego de cambiar el valor de la casilla, se dibuja la matriz actualizada
 		dibujarMatriz();
-		return true; //Si todo salió bien, regresa verdadero
+		return true;
 	}
 	
 	private static int validarNumero(Scanner scanner) {
@@ -123,7 +170,7 @@ public class Juego {
 			}
 			if (n<1 || n>3)
 				System.out.println("¡Sólo puedes elegir un número entre 1 y 3!");
-		} while(n<1 || n>3);
+		} while(n<1 || n>9);
 		return n;
 	}
 	
@@ -134,8 +181,9 @@ public class Juego {
 		System.out.println("------------------------------");
 		System.out.println("\t|Instrucciones|");
 		System.out.println("Para seleccionar un cuadrante:");
-		System.out.println("Escribe el número de la fila (horizontal)");
-		System.out.println("Escribe el número de la columna (vertical)\n");
+		System.out.println("Escribe el número del cuadrante según se muestra a continuación:");
+		
+		dibujarEjemplo();
 		
 		System.out.print(">--------EL JUEGO COMENZÓ--------<");
 		matriz = new int[][]{
