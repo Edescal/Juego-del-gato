@@ -169,7 +169,7 @@ public class Juego {
 				scanner.nextLine();
 			}
 			if (n<1 || n>3)
-				System.out.println("¡Sólo puedes elegir un número entre 1 y 3!");
+				System.out.println("¡Sólo puedes elegir un número entre 1 y 9!");
 		} while(n<1 || n>9);
 		return n;
 	}
